@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import Hello from '../vue/apps/Hello';
+import App from '../vue/apps/PhotoEdit';
 
 Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(Hello),
+  render: h => h(App),
 }).$mount('#app');
