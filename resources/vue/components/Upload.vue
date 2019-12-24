@@ -4,6 +4,9 @@
       class="wrapper"
       :class="{useAutoSizing}"
     >
+      <div class="controller">
+        <button type="button" @click="fitContainer">{{fitButtonText}}</button>
+      </div>
       <vue-croppa
         class="canvas"
         v-model="image"
@@ -18,9 +21,6 @@
         @init="init"
         @draw="init"
       />
-      <div class="controller">
-        <button type="button" @click="fitContainer">Fit</button>
-      </div>
     </div>
   </div>
 </template>
@@ -38,6 +38,11 @@ export default {
       image: {},
       useAutoSizing: false,
     };
+  },
+  computed: {
+    fitButtonText() {
+      return this.useAutoSizing ? 'Unfit' : 'Fit';
+    },
   },
   methods: {
     fitContainer() {
