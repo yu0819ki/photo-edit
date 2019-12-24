@@ -22,4 +22,10 @@ export default {
   width: 960px;
   justify-content: center;
 }
+
+@media (max-width: 480px) {
+  .PhotoEdit {
+    width: 100%;
+  }
+}
 </style>
