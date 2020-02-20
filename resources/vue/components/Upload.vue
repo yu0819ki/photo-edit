@@ -6,6 +6,7 @@
     >
       <div class="controller">
         <button type="button" @click="fitContainer">{{fitButtonText}}</button>
+        <button type="button" @click="random">Random</button>
       </div>
       <vue-croppa
         class="canvas"
@@ -52,6 +53,13 @@ export default {
       if (this.useAutoSizing) {
         this.image.realHeight = this.image.realWidth;
       }
+    },
+    random() {
+      const ctx = this.image.ctx;
+      const contrast = (Math.random() * 100).toFixed(0);
+      const brightness = (Math.random() * 100).toFixed(0);
+      ctx.filter = `contrast(${contrast}%) brightness(${brightness}%)`;
+      this.image._draw();
     },
   },
 }
