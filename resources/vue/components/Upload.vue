@@ -6,7 +6,12 @@
     >
       <div class="controller">
         <button type="button" @click="fitContainer">{{fitButtonText}}</button>
-        <button type="button" @click="random">Random</button>
+        <b-field label="Contrast">
+          <b-slider v-model="contrast" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyFilter" ></b-slider>
+        </b-field>
+        <b-field label="Brightness">
+          <b-slider v-model="brightness" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyFilter" ></b-slider>
+        </b-field>
       </div>
       <vue-croppa
         class="canvas"
@@ -28,16 +33,20 @@
 
 <script>
 import { component as VueCroppa} from 'vue-croppa';
+import BField from "buefy/src/components/field/Field";
 
 export default {
   name: 'Upload',
   components: {
+    BField,
     VueCroppa,
   },
   data() {
     return {
       image: {},
       useAutoSizing: false,
+      contrast: 100,
+      brightness: 100,
     };
   },
   computed: {
@@ -54,18 +63,18 @@ export default {
         this.image.realHeight = this.image.realWidth;
       }
     },
-    random() {
+    applyFilter() {
       const ctx = this.image.ctx;
-      const contrast = (Math.random() * 100).toFixed(0);
-      const brightness = (Math.random() * 100).toFixed(0);
-      ctx.filter = `contrast(${contrast}%) brightness(${brightness}%)`;
+      ctx.filter = `contrast(${this.contrast}%) brightness(${this.brightness}%)`;
       this.image._draw();
-    },
+    }
   },
 }
 </script>
 
 <style src="vue-croppa/dist/vue-croppa.css">
+</style>
+<style src="buefy/dist/buefy.css">
 </style>
 <style scoped>
 .Upload {
