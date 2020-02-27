@@ -84,6 +84,10 @@ export default {
   flex-direction: column;
 }
 
+.controller {
+  padding: 12px;
+}
+
 .wrapper {
   margin: auto;
 }
