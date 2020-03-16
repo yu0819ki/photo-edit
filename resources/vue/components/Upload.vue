@@ -13,7 +13,7 @@
           <b-slider v-model="brightness" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyFilter" ></b-slider>
         </b-field>
         <b-field label="Temperature">
-          <b-slider v-model="temperature" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyTempFilter" ></b-slider>
+          <b-slider v-model="temperature" :min="2000" :max="10000" :custom-formatter="val => (val - 100) + 'K'" lazy @change="applyTempFilter" ></b-slider>
         </b-field>
       </div>
       <vue-croppa
@@ -39,7 +39,8 @@
 
 <script>
 import { component as VueCroppa} from 'vue-croppa';
-import BField from "buefy/src/components/field/Field";
+import BField from 'buefy/src/components/field/Field';
+import chroma from 'chroma-js';
 
 export default {
   name: 'Upload',
@@ -88,11 +89,10 @@ export default {
         ctx.drawImage(newImage, 0, 0);
         const imageData = ctx.getImageData(0, 0, originalImage.naturalWidth, originalImage.naturalHeight);
         const data = imageData.data;
+
+        const dest = chroma.temperature(this.temperature);
         for (let i = 0; i < data.length; i += 4) {
-          // 255-(r|g|b)
-          data[i]   = 255 - data[i]  ;
-          data[i+1] = 255 - data[i+1];
-          data[i+2] = 255 - data[i+2];
+          [data[i], data[i + 1], data[i + 2]] = chroma.blend(chroma(data[i], data[i + 1], data[i + 2]), dest, 'multiply').rgb();
         }
         ctx.putImageData(imageData, 0, 0);
 
