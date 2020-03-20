@@ -13,7 +13,7 @@
           <b-slider v-model="brightness" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyFilter" ></b-slider>
         </b-field>
         <b-field label="Temperature">
-          <b-slider v-model="temperature" :min="2000" :max="10000" :custom-formatter="val => (val - 100) + 'K'" lazy @change="applyTempFilter" ></b-slider>
+          <b-slider v-model="temperature" :min="4000" :max="9000" :custom-formatter="val => val + 'K'" lazy @change="applyTempFilter" ></b-slider>
         </b-field>
       </div>
       <vue-croppa
@@ -54,7 +54,7 @@ export default {
       useAutoSizing: false,
       contrast: 100,
       brightness: 100,
-      temperature: 100,
+      temperature: 6500,
       originalImage: null,
       initialImage: null,
     };
@@ -82,20 +82,22 @@ export default {
       const originalImage = this.originalImage;
       const newImage = new Image();
       const newCanvas = document.createElement('canvas');
+      const tempLayer = document.createElement('canvas');
+
       newImage.onload = () => {
         newCanvas.width = originalImage.naturalWidth;
         newCanvas.height = originalImage.naturalHeight;
+        tempLayer.width = originalImage.naturalWidth;
+        tempLayer.height = originalImage.naturalHeight;
         const ctx = newCanvas.getContext('2d');
         ctx.drawImage(newImage, 0, 0);
-        const imageData = ctx.getImageData(0, 0, originalImage.naturalWidth, originalImage.naturalHeight);
-        const data = imageData.data;
+        ctx.globalCompositeOperation = 'multiply';
 
-        const dest = chroma.temperature(this.temperature);
-        for (let i = 0; i < data.length; i += 4) {
-          [data[i], data[i + 1], data[i + 2]] = chroma.blend(chroma(data[i], data[i + 1], data[i + 2]), dest, 'multiply').rgb();
-        }
-        ctx.putImageData(imageData, 0, 0);
+        const tempCtx = tempLayer.getContext('2d');
+        tempCtx.fillStyle = chroma.temperature(this.temperature).name();
+        tempCtx.fillRect(0, 0, originalImage.naturalWidth, originalImage.naturalHeight);
 
+        ctx.drawImage(tempLayer, 0, 0, originalImage.naturalWidth, originalImage.naturalHeight);
         this.initialImage = newCanvas.toDataURL('image/png');
         this.image.refresh();
       };
