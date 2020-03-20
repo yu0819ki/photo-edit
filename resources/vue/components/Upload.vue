@@ -29,6 +29,7 @@
         :prevent-white-space="true"
         :quality="4"
         :initial-image="initialImage"
+        accept="image/*"
         @init="init"
         @draw="init"
         @new-image-drawn="handleNewImageDrawn"
