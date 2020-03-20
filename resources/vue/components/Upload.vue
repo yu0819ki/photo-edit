@@ -6,6 +6,7 @@
     >
       <div class="controller">
         <button type="button" @click="fitContainer">{{fitButtonText}}</button>
+        <button type="button" @click="save">save</button>
         <b-field label="Contrast">
           <b-slider v-model="contrast" :min="0" :max="200" :custom-formatter="val => (val - 100) + '%'" lazy @change="applyFilter" ></b-slider>
         </b-field>
@@ -110,6 +111,12 @@ export default {
     },
     handleRemove() {
       this.originalImage = null;
+    },
+    save() {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = this.image.generateDataUrl();
+      downloadLink.setAttribute('download', 'photo-edit.png');
+      downloadLink.dispatchEvent(new MouseEvent('click'));
     },
   },
 }
